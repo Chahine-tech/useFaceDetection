@@ -1,13 +1,15 @@
-use opencv::{highgui, imgcodecs, objdetect, prelude::*, types};
+use opencv::{highgui, imgcodecs, imgproc, objdetect, prelude::*, types};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let face_cascade_path = "path/to/haarcascade_frontalface_default.xml";
-    let face_cascade = objdetect::CascadeClassifier::new(face_cascade_path)?;
+    let face_cascade_path = "data/haarcascade_frontalface_default.xml";
+    // Declare `face_cascade` as mutable
+    let mut face_cascade = objdetect::CascadeClassifier::new(face_cascade_path)?;
 
-    let image_path = "path/to/image.jpg";
+    let image_path = "data/image.jpg";
     let mut img = imgcodecs::imread(image_path, imgcodecs::IMREAD_COLOR)?;
 
     let mut faces = types::VectorOfRect::new();
+    // Now `face_cascade` can be borrowed as mutable
     face_cascade.detect_multi_scale(
         &img,
         &mut faces,
@@ -19,17 +21,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     )?;
 
     for face in faces {
-        highgui::rectangle(
+        imgproc::rectangle(
             &mut img,
             face,
             opencv::core::Scalar::new(0.0, 255.0, 0.0, 0.0),
             1,
-            highgui::LINE_8,
+            imgproc::LINE_8,
             0,
         )?;
     }
 
-    highgui::named_window("Face Detection", 1)?;
+    highgui::named_window("Face Detection", highgui::WINDOW_AUTOSIZE)?;
     highgui::imshow("Face Detection", &img)?;
     highgui::wait_key(0)?;
 
