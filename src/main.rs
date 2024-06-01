@@ -4,10 +4,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let face_cascade_path = "data/haarcascade_frontalface_default.xml";
     let mut face_cascade = objdetect::CascadeClassifier::new(face_cascade_path)?;
 
-    // Ouvrir le flux vidéo
-    let mut cam = videoio::VideoCapture::new(0, videoio::CAP_ANY)?; // 0 correspond à la première caméra
+    // Open video stream
+    let mut cam = videoio::VideoCapture::new(0, videoio::CAP_ANY)?; // 0 is the default camera
     if !videoio::VideoCapture::is_opened(&cam)? {
-        panic!("Impossible d'ouvrir la caméra");
+        panic!("Unable to open default camera!");
     }
 
     loop {
@@ -40,7 +40,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             highgui::imshow("Face Detection", &frame)?;
         }
 
-        // Quitter la boucle si la touche 'q' est pressée
+        // Break the loop if the user presses the 'q' key
         if highgui::wait_key(10)? == 113 {
             break;
         }
